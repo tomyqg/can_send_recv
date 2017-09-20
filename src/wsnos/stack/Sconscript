@@ -1,0 +1,16 @@
+import os
+from tools import *
+
+objs = []
+src = []
+CPPPATH = [GetCurrentDir()]
+
+objs = DefineGroup('stack', src, depend=[''], CPPPATH = CPPPATH)
+
+if GetDepend(['STACK_SSN']):
+    objs += SConscript(os.path.join('SSN', 'Sconscript'))
+elif GetDepend(['STACK_LORAWAN']):
+    objs += SConscript(os.path.join('LoRaWAN', 'Sconscript'))
+
+Return('objs')
+

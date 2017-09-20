@@ -1,0 +1,21 @@
+import os
+from tools import *
+
+src = Glob('*.c')
+if GetDepend(['DEV_COL']):
+    SrcRemove(src,'mac_ed_handle.c')
+    SrcRemove(src,'mac_rp_handle.c')
+elif GetDepend(['DEV_ROU']):
+    SrcRemove(src,'mac_ed_handle.c')
+    SrcRemove(src,'mac_ap_handle.c')
+elif GetDepend(['DEV_TAG']):
+    SrcRemove(src,'mac_ap_handle.c')
+    SrcRemove(src,'mac_rp_handle.c')
+    
+CPPPATH = [GetCurrentDir()]
+
+group = DefineGroup('mac', src, depend=[''], CPPPATH = CPPPATH)
+
+Return('group')
+
+

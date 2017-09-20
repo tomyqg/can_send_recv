@@ -1,0 +1,19 @@
+import os
+from tools import *
+
+objs = []
+cwd = GetCurrentDir()
+
+src = Glob('*.c')
+
+CPPPATH = [GetCurrentDir()]
+
+objs = DefineGroup('radio', src, depend=[''], CPPPATH = CPPPATH)
+
+c_list = os.listdir(cwd)
+for item in c_list:
+    if os.path.isfile(os.path.join(cwd, item, 'Sconscript')):
+        objs += SConscript(os.path.join(item, 'Sconscript'))
+
+Return('objs')
+

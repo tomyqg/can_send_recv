@@ -1,0 +1,6 @@
+Debug
+Release
+settings
+*.tag*
+*.o*
+.sconsign.dblite

@@ -1,0 +1,17 @@
+import os
+from tools import *
+
+src = Glob('*.c')
+
+if GetDepend(['DEV_COL']):
+    SrcRemove(src,'nwk_ed_handles.c')
+elif GetDepend(['DEV_ROU']):
+    SrcRemove(src,'nwk_ap_handles.c')
+elif GetDepend(['DEV_TAG']):
+    SrcRemove(src,'nwk_ap_handles.c')
+
+CPPPATH = [GetCurrentDir()]
+
+group = DefineGroup('nwk', src, depend=[''], CPPPATH=CPPPATH)
+
+Return('group')

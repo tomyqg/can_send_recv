@@ -1,0 +1,10 @@
+from tools import *
+
+src = Glob('*.c')
+SrcRemove(src, 'rtc.c')
+
+CPPPATH = [GetCurrentDir()]
+
+group = DefineGroup('sim_dev', src, depend=[''], CPPPATH=CPPPATH)
+
+Return('group')

@@ -1,0 +1,13 @@
+import os
+from tools import *
+
+src = Glob('*.c')
+
+# prevent ClassA conflict ClassC
+SrcRemove(src, ['LoRaMac_classC.c'])
+
+CPPPATH = [GetCurrentDir()]
+
+group = DefineGroup('common', src, depend=[''], CPPPATH = CPPPATH)
+
+Return('group')

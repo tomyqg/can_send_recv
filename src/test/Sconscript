@@ -1,0 +1,19 @@
+import os
+from tools import *
+
+objs = []
+src = Glob('*.c')
+
+CPPPATH = [GetCurrentDir()]
+
+objs = DefineGroup('test', src, depend=[''], CPPPATH=CPPPATH)
+
+
+cwd = GetCurrentDir()
+c_list = os.listdir(cwd)
+
+for item in c_list:
+    if os.path.isfile(os.path.join(cwd, item, 'Sconscript')):
+        objs += SConscript(os.path.join(item, 'Sconscript'))
+
+Return('objs')

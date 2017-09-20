@@ -1,0 +1,10 @@
+from tools import *
+
+src = Glob('*.c')
+SrcRemove(src, 'm_sync.c')
+
+CPPPATH = [GetCurrentDir()]
+
+group = DefineGroup('mac_module', src, depend=[''], CPPPATH=CPPPATH)
+
+Return('group')

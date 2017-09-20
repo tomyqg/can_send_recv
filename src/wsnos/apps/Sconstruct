@@ -1,0 +1,65 @@
+import os
+import sys
+
+# import config
+BUILD = 'release'
+
+# toolchains
+CC = 'gcc'
+AS = 'gcc'
+AR = 'ar'
+LINK = 'gcc'
+TARGET_EXT = 'out'
+SIZE = 'size'
+OBJDUMP = 'objdump'
+OBJCPY = 'objcopy'
+
+DEVICE = ' -ffunction-sections -fdata-sections'
+# -std=c99 == -std=gnu99 -D_GNU_SOURCE
+CFLAGS = DEVICE + ' -std=c99'
+AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp'
+LFLAGS = DEVICE + ' -Wall'
+
+CPATH = ''
+LPATH = ''
+
+PROJ_ROOT = os.path.normpath(os.getcwd() + '/..')
+TOOLS_ROOT = os.path.normpath(os.getcwd() + '/..')
+
+sys.path += [PROJ_ROOT, TOOLS_ROOT]
+from tools import *
+
+AddDepend('DEV_COL')
+AddDepend('STACK_LORAWAN')
+
+CPPDEFINES = ['_GNU_SOURCE', 'PF_CORE_POSIX', 'SIM_RADIO', 'DEBUG_PRINTF_PRINT_EN=1']
+CPPDEFINES.append('USE_BAND_470')
+CPPDEFINES.append('STACK_LORAWAN')
+
+if BUILD == 'debug':
+    CFLAGS += ' -g -O0'
+    AddDepend('UNITY_TEST')
+else:
+    CFLAGS += ' -g -O0'
+
+
+env = Environment(
+    tools=['mingw'],
+    CPPDEFINES=CPPDEFINES,
+    AS=AS, ASFLAGS=AFLAGS, CC=CC, CCFLAGS=CFLAGS, AR=AR, ARFLAGS='-rc',
+    LINK=LINK, LINKFLAGS=LFLAGS, LIBS=['pthread', 'm'],
+    LIBPATH=['/usr/lib', '/usr/local/lib'])
+
+TARGET = "app-posix." + TARGET_EXT
+
+Export('PROJ_ROOT')
+Repository(PROJ_ROOT)
+
+objs = PrepareBuilding(env, PROJ_ROOT)
+
+objs += SConscript(PROJ_ROOT+'/Sconscript', variant_dir='build/', duplicate=0,
+    CPPPATH=PROJ_ROOT)
+
+objs += SConscript('Sconscript', variant_dir='build/apps/', duplicate=0)
+
+env.Program(TARGET, objs)
